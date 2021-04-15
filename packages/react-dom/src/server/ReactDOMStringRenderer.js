@@ -13,10 +13,10 @@ import ReactPartialRenderer from './ReactPartialRenderer';
  * server.
  * See https://reactjs.org/docs/react-dom-server.html#rendertostring
  */
-export function renderToString(element, options?: ServerOptions) {
+export async function renderToString(element, options?: ServerOptions) {
   const renderer = new ReactPartialRenderer(element, false, options);
   try {
-    const markup = renderer.read(Infinity);
+    const markup = await renderer.read(Infinity);
     return markup;
   } finally {
     renderer.destroy();

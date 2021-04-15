@@ -848,7 +848,7 @@ class ReactDOMServerRenderer {
     }
   }
 
-  read(bytes: number): string | null {
+  async read(bytes: number) {
     if (this.exhausted) {
       return null;
     }
@@ -919,7 +919,7 @@ class ReactDOMServerRenderer {
           ((frame: any): FrameDev).debugElementStack.length = 0;
         }
         try {
-          outBuffer += this.render(child, frame.context, frame.domNamespace);
+          outBuffer += await this.render(child, frame.context, frame.domNamespace);
         } catch (err) {
           if (err != null && typeof err.then === 'function') {
             if (enableSuspenseServerRenderer) {
@@ -956,11 +956,11 @@ class ReactDOMServerRenderer {
     }
   }
 
-  render(
+  async render(
     child: ReactNode | null,
     context: Object,
     parentNamespace: string,
-  ): string {
+  ) {
     if (typeof child === 'string' || typeof child === 'number') {
       const text = '' + child;
       if (text === '') {
@@ -1299,7 +1299,17 @@ class ReactDOMServerRenderer {
             // resolved constructors are supported.
             const payload = lazyComponent._payload;
             const init = lazyComponent._init;
-            const result = init(payload);
+            let result;
+            try {
+              result = init(payload);
+            } catch (err) {
+              if (err != null && typeof err.then === 'function') {
+                await err;
+                result = init(payload);
+              } else {
+                throw err;
+              }
+            }
             const nextChildren = [
               React.createElement(
                 result,

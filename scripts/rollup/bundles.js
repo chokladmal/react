@@ -66,7 +66,8 @@ const {
   NON_FIBER_RENDERER,
 } = moduleTypes;
 
-const bundles = [
+
+const bundles_ = [
   /******* Isomorphic *******/
   {
     bundleTypes: [
@@ -251,27 +252,27 @@ const bundles = [
   },
 
   /******* React Transport DOM Server Webpack *******/
-  {
-    bundleTypes: [NODE_DEV, NODE_PROD, UMD_DEV, UMD_PROD],
-    moduleType: RENDERER,
-    entry: 'react-transport-dom-webpack/server.browser',
-    global: 'ReactTransportDOMServer',
-    externals: ['react', 'react-dom/server'],
-  },
-  {
-    bundleTypes: [NODE_DEV, NODE_PROD],
-    moduleType: RENDERER,
-    entry: 'react-transport-dom-webpack/server.node',
-    global: 'ReactTransportDOMServer',
-    externals: ['react', 'react-dom/server'],
-  },
-  {
-    bundleTypes: [NODE_DEV, NODE_PROD],
-    moduleType: RENDERER,
-    entry: 'react-transport-dom-webpack/server-runtime',
-    global: 'ReactTransportDOMServerRuntime',
-    externals: ['react'],
-  },
+  // {
+  //   bundleTypes: [NODE_DEV, NODE_PROD, UMD_DEV, UMD_PROD],
+  //   moduleType: RENDERER,
+  //   entry: 'react-transport-dom-webpack/server.browser',
+  //   global: 'ReactTransportDOMServer',
+  //   externals: ['react', 'react-dom/server'],
+  // },
+  // {
+  //   bundleTypes: [NODE_DEV, NODE_PROD],
+  //   moduleType: RENDERER,
+  //   entry: 'react-transport-dom-webpack/server.node',
+  //   global: 'ReactTransportDOMServer',
+  //   externals: ['react', 'react-dom/server'],
+  // },
+  // {
+  //   bundleTypes: [NODE_DEV, NODE_PROD],
+  //   moduleType: RENDERER,
+  //   entry: 'react-transport-dom-webpack/server-runtime',
+  //   global: 'ReactTransportDOMServerRuntime',
+  //   externals: ['react'],
+  // },
 
   /******* React Transport DOM Client Webpack *******/
   {
@@ -720,6 +721,9 @@ function deepFreeze(o) {
   });
   return o;
 }
+
+const bundles = bundles_.filter(b => ['react-dom/server.node', 'react'].includes(b.entry));
+console.log(bundles);
 
 // Don't accidentally mutate config as part of the build
 deepFreeze(bundles);
